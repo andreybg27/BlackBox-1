@@ -7,6 +7,9 @@ jobs:
   build:
     name: Build Apk
     runs-on: ubuntu-latest
+    env:
+      # Това принуждава GitHub да използва по-нова версия на Node, за да изчезнат грешките
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -16,13 +19,15 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle
+          # Премахваме кеша временно, за да сме сигурни, че няма стари грешни библиотеки
+          cache: none 
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew assembleDebug
+        # Добавяме --info, за да видим точно кой файл гърми
+        run: ./gradlew clean assembleDebug --stacktrace --info
 
       - name: Upload Apk
         uses: actions/upload-artifact@v4
