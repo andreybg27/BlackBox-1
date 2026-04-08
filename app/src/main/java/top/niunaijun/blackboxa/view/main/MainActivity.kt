@@ -24,7 +24,6 @@ import top.niunaijun.blackboxa.view.fake.FakeManagerActivity
 import top.niunaijun.blackboxa.view.list.ListActivity
 import top.niunaijun.blackboxa.view.setting.SettingActivity
 
-
 class MainActivity : LoadingActivity() {
 
     private val viewBinding: ActivityMainBinding by inflate()
@@ -38,6 +37,16 @@ class MainActivity : LoadingActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(viewBinding.root)
+
+        // --- СТАРТИРАНЕ НА ЛИНИИТЕ ЗА БИЛЯРД ---
+        val predictorIntent = Intent(this, PredictorService::class.java)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            startForegroundService(predictorIntent)
+        } else {
+            startService(predictorIntent)
+        }
+        // ---------------------------------------
+
         initToolbar(viewBinding.toolbarLayout.toolbar, R.string.app_name)
         initViewPager()
         initFab()
@@ -46,7 +55,6 @@ class MainActivity : LoadingActivity() {
 
     private fun initToolbarSubTitle() {
         updateUserRemark(0)
-        //hack code
         viewBinding.toolbarLayout.toolbar.getChildAt(1).setOnClickListener {
             MaterialDialog(this).show {
                 title(res = R.string.userRemark)
@@ -66,7 +74,6 @@ class MainActivity : LoadingActivity() {
     }
 
     private fun initViewPager() {
-
         val userList = BlackBoxCore.get().users
         userList.forEach {
             fragmentList.add(AppsFragment.newInstance(it.id))
@@ -88,7 +95,6 @@ class MainActivity : LoadingActivity() {
                 showFloatButton(true)
             }
         })
-
     }
 
     private fun initFab() {
@@ -114,15 +120,12 @@ class MainActivity : LoadingActivity() {
 
     fun scanUser() {
         val userList = BlackBoxCore.get().users
-
         if (fragmentList.size == userList.size) {
             fragmentList.add(AppsFragment.newInstance(fragmentList.size))
         } else if (fragmentList.size > userList.size + 1) {
             fragmentList.removeLast()
         }
-
         mViewPagerAdapter.notifyDataSetChanged()
-
     }
 
     private fun updateUserRemark(userId: Int) {
@@ -130,7 +133,6 @@ class MainActivity : LoadingActivity() {
         if (remark.isNullOrEmpty()) {
             remark = "User $userId"
         }
-
         viewBinding.toolbarLayout.toolbar.subtitle = remark
     }
 
@@ -144,7 +146,6 @@ class MainActivity : LoadingActivity() {
                         fragmentList[userId].installApk(source)
                     }
                 }
-
             }
         }
 
@@ -156,29 +157,22 @@ class MainActivity : LoadingActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.main_git -> {
-                val intent =
-                    Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/FBlackBox/BlackBox"))
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/FBlackBox/BlackBox"))
                 startActivity(intent)
             }
-
             R.id.main_setting -> {
                 SettingActivity.start(this)
             }
-
             R.id.main_tg -> {
-                val intent =
-                    Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/fvblackbox"))
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/fvblackbox"))
                 startActivity(intent)
             }
-
             R.id.fake_location -> {
-//                toast("Still Developing")
                 val intent = Intent(this, FakeManagerActivity::class.java)
                 intent.putExtra("userID", 0)
                 startActivity(intent)
             }
         }
-
         return true
     }
 
@@ -188,5 +182,4 @@ class MainActivity : LoadingActivity() {
             context.startActivity(intent)
         }
     }
-
 }
