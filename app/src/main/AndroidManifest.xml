@@ -4,7 +4,12 @@
     package="top.niunaijun.blackboxa">
 
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <application
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" 
+        tools:node="replace" />
+
+    <application
         android:name=".app.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,33 +21,42 @@
         tools:targetApi="n">
 
         <service 
-            android:name=".view.main.PredictorService"
+            android:name="top.niunaijun.blackboxa.view.main.PredictorService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="specialUse" />
+            android:foregroundServiceType="specialUse">
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" 
+                      android:value="Aim assistant for educational purposes" />
+        </service>
 
         <activity
             android:name=".view.fake.FollowMyLocationOverlay"
             android:exported="false" />
         <activity android:name=".view.setting.SettingActivity" />
         <activity android:name=".view.gms.GmsManagerActivity" />
+        
         <activity
             android:name=".view.main.WelcomeActivity"
             android:launchMode="singleTop"
-            android:theme="@style/WelcomeTheme">
+            android:theme="@style/WelcomeTheme"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity android:name=".view.list.ListActivity" />
         <activity android:name=".view.fake.FakeManagerActivity" />
         <activity android:name=".view.xp.XpActivity" />
+        
         <activity
             android:name=".view.main.ShortcutActivity"
             android:excludeFromRecents="true"
             android:exported="true" />
-        <activity android:name=".view.main.MainActivity">
+            
+        <activity android:name=".view.main.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
