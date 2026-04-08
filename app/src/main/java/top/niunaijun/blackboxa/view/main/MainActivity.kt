@@ -24,6 +24,9 @@ import top.niunaijun.blackboxa.view.fake.FakeManagerActivity
 import top.niunaijun.blackboxa.view.list.ListActivity
 import top.niunaijun.blackboxa.view.setting.SettingActivity
 
+// ВАЖНИЯТ ИМПОРТ, КОЙТО ЛИПСВАШЕ:
+import top.niunaijun.blackboxa.view.main.PredictorService
+
 class MainActivity : LoadingActivity() {
 
     private val viewBinding: ActivityMainBinding by inflate()
@@ -39,11 +42,15 @@ class MainActivity : LoadingActivity() {
         setContentView(viewBinding.root)
 
         // --- СТАРТИРАНЕ НА ЛИНИИТЕ ЗА БИЛЯРД ---
-        val predictorIntent = Intent(this, PredictorService::class.java)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            startForegroundService(predictorIntent)
-        } else {
-            startService(predictorIntent)
+        try {
+            val predictorIntent = Intent(this, PredictorService::class.java)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                startForegroundService(predictorIntent)
+            } else {
+                startService(predictorIntent)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
         // ---------------------------------------
 
