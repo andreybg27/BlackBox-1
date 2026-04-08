@@ -1,8 +1,6 @@
-Name: Android CI
+name: Android CI
 
 on:
-  push:
-  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -10,12 +8,8 @@ jobs:
     name: Build Apk
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.9.1
-        with:
-          access_token: ${{ github.token }}
-
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: set up JDK 17
         uses: actions/setup-java@v4
@@ -27,7 +21,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build release apk
+      - name: Build with Gradle
         run: ./gradlew assembleDebug
 
       - name: Upload Apk
